@@ -106,13 +106,15 @@ function constructRoute(endpoint) {
     const RouteFunction = (req, res, next) => {
             req.apiVersion = endpoint.apiVersion;
             if (endpoint.config.hasOwnProperty('validation')) {
-              const validation = endpoint.config.validation(req, res, next);
-              if (!validation.success) {
-                return res.status(422).json({ success: false, error: {
-                    message: validation.message,
-                  },
+              endpoint.config.validation(req, res, next)
+                .then(function(validation) {
+                  if (!validation.success) {
+                    return res.status(422).json({ success: false, error: {
+                        message: validation.message,
+                      },
+                    });
+                  }
                 });
-              }
             }
             return endpoint.config.implementation(req, res, next);
         },
