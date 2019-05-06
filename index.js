@@ -113,10 +113,13 @@ function constructRoute(endpoint) {
                         message: validation.message,
                       },
                     });
+                  } else {
+                    return endpoint.config.implementation(req, res, next);
                   }
                 });
+            } else {
+              return endpoint.config.implementation(req, res, next);
             }
-            return endpoint.config.implementation(req, res, next);
         },
         endpointURL = `/${endpoint.apiVersion}${endpoint.config.route}`;
 
